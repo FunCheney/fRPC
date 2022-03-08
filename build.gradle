@@ -1,0 +1,29 @@
+// 项目中所有 module 的默认 group 和 version ，module 的build 中自己声明，可以进行覆盖
+allprojects {
+    version = '1.0-SNAPSHOT'
+    group = 'com.fan.rpc'
+}
+
+// 所有子模块的配置
+subprojects {
+    // java 插件
+    apply plugin: 'java'
+    // java-library 主要是使用其中 api 的依赖方式
+    apply plugin: 'java-library'
+
+    // jdk 版本声明
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // 默认依赖
+    dependencies {
+
+    }
+
+// 配置依赖中排除 log4j
+    configurations {
+        implementation {
+            exclude module: 'slf4j-log4j12'
+        }
+    }
+}

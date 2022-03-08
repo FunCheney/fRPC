@@ -20,3 +20,9 @@ deploy/*
 */.project
 */.settings/
 */bin/
+/../gradle/*
+/../build.gradle
+/transport/gradlew
+/transport/gradlew.bat
+/transport/settings.gradle
+/transport/gradle/
