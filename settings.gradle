@@ -1,4 +1,5 @@
 rootProject.name = 'fRPC'
 
 include 'transport'
-include 'serialization'
+include 'common'
+

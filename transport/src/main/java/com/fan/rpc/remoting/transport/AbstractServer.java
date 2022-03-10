@@ -8,11 +8,12 @@ public abstract class AbstractServer extends AbstractPeer implements RemotingSer
 
     private InetSocketAddress bindAddress;
 
-    protected abstract void doConnect() throws Throwable;
+    public abstract void doStart() throws Throwable;
 
     protected abstract void doClose() throws Throwable;
 
     public InetSocketAddress getBindAddress() {
-        return bindAddress;
+
+        return new InetSocketAddress(9999);
     }
 }

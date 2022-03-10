@@ -1,5 +1,6 @@
 package com.fan.rpc.remoting.transport.handler;
 
+import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
 import com.fan.rpc.remoting.netty.NettyChannel;
 import io.netty.channel.Channel;
@@ -13,7 +14,7 @@ public abstract class AbstractChannelHandler implements FChannelHandler {
     }
 
     @Override
-    public void received(NettyChannel channel, Object message) {
+    public void received(FChannel channel, Object message) {
         handler.received(channel, message);
     }
 }

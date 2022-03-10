@@ -2,14 +2,13 @@ package com.fan.rpc.remoting.netty;
 
 import com.fan.rpc.remoting.FChannelHandler;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class NettyChannel {
+public class NettyChannel extends AbstractFChannel{
 
     /**
      * the cache for netty channel and fRpc channel

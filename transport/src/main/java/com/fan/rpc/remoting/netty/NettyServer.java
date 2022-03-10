@@ -18,7 +18,7 @@ public class NettyServer extends AbstractServer {
 
 
     @Override
-    protected void doConnect() throws Throwable {
+    public void doStart() throws Throwable {
         bootstrap = new ServerBootstrap();
 
         bossGroup = NettyEventLoopFactory.eventLoopGroup(1, "NettyServerBoss");

@@ -1,5 +1,6 @@
 package com.fan.rpc.remoting.transport.dispatcher;
 
+import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
 import com.fan.rpc.remoting.netty.NettyChannel;
 
@@ -17,7 +18,7 @@ public class WrappedChannelHandler implements FChannelHandler {
         this.handler = handler;
     }
     @Override
-    public void received(NettyChannel channel, Object message) {
+    public void received(FChannel channel, Object message) {
         handler.received(channel, message);
     }
 

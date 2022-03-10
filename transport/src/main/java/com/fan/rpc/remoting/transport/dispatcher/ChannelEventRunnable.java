@@ -17,30 +17,31 @@
 package com.fan.rpc.remoting.transport.dispatcher;
 
 
+import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
 import com.fan.rpc.remoting.netty.NettyChannel;
 
 public class ChannelEventRunnable implements Runnable {
 
     private final FChannelHandler handler;
-    private final NettyChannel channel;
+    private final FChannel channel;
     private final ChannelState state;
     private final Throwable exception;
     private final Object message;
 
-    public ChannelEventRunnable(NettyChannel channel, FChannelHandler handler, ChannelState state) {
+    public ChannelEventRunnable(FChannel channel, FChannelHandler handler, ChannelState state) {
         this(channel, handler, state, null);
     }
 
-    public ChannelEventRunnable(NettyChannel channel, FChannelHandler handler, ChannelState state, Object message) {
+    public ChannelEventRunnable(FChannel channel, FChannelHandler handler, ChannelState state, Object message) {
         this(channel, handler, state, message, null);
     }
 
-    public ChannelEventRunnable(NettyChannel channel, FChannelHandler handler, ChannelState state, Throwable t) {
+    public ChannelEventRunnable(FChannel channel, FChannelHandler handler, ChannelState state, Throwable t) {
         this(channel, handler, state, null, t);
     }
 
-    public ChannelEventRunnable(NettyChannel channel, FChannelHandler handler, ChannelState state, Object message, Throwable exception) {
+    public ChannelEventRunnable(FChannel channel, FChannelHandler handler, ChannelState state, Object message, Throwable exception) {
         this.channel = channel;
         this.handler = handler;
         this.state = state;
