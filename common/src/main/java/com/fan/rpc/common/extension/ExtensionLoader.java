@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.sort;
 import static java.util.ServiceLoader.load;
 import static java.util.stream.StreamSupport.stream;
 
@@ -96,7 +95,7 @@ public class ExtensionLoader<T> {
     }
 
     private static LoadingStrategy[] loadLoadingStrategies() {
-        // 这里调用原生的 Java SPI 来加载类
+        // 这里调用原生的 Java SPI 来加载类，加载 MATE-INF/services 下面的文件
         return stream(load(LoadingStrategy.class).spliterator(), false)
                 .sorted()
                 .toArray(LoadingStrategy[]::new);
@@ -108,6 +107,7 @@ public class ExtensionLoader<T> {
     }
 
     private ExtensionLoader(Class<?> type) {
+        // 这里给 type 复制，type 就是要加载的扩展类的接口
         this.type = type;
         objectFactory = (type == ExtensionFactory.class ? null : ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension());
     }
@@ -152,7 +152,6 @@ public class ExtensionLoader<T> {
     }
 
 
-
     private static ClassLoader findClassLoader() {
         return ClassUtils.getClassLoader(ExtensionLoader.class);
     }
@@ -165,7 +164,6 @@ public class ExtensionLoader<T> {
         getExtensionClasses();// load class
         return cachedNames.get(extensionClass);
     }
-
 
 
     private boolean isMatchGroup(String group, String[] groups) {
@@ -220,7 +218,6 @@ public class ExtensionLoader<T> {
     public Object getLoadedAdaptiveExtensionInstances() {
         return cachedAdaptiveInstance.get();
     }
-
 
 
     /**
@@ -803,18 +800,11 @@ public class ExtensionLoader<T> {
     /**
      * cache Activate class which is annotated with <code>Activate</code>
      * <p>
-     * for compatibility, also cache class with old alibaba Activate annotation
      */
     private void cacheActivateClass(Class<?> clazz, String name) {
         Activate activate = clazz.getAnnotation(Activate.class);
         if (activate != null) {
             cachedActivates.put(name, activate);
-        } else {
-//            // support com.alibaba.dubbo.common.extension.Activate
-//            com.alibaba.dubbo.common.extension.Activate oldActivate = clazz.getAnnotation(com.alibaba.dubbo.common.extension.Activate.class);
-//            if (oldActivate != null) {
-//                cachedActivates.put(name, oldActivate);
-//            }
         }
     }
 
@@ -830,7 +820,6 @@ public class ExtensionLoader<T> {
                     + ", " + clazz.getName());
         }
     }
-
 
 
     /**

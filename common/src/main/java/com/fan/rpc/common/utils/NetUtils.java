@@ -17,10 +17,11 @@
 package com.fan.rpc.common.utils;
 
 
-
 import java.io.IOException;
 import java.net.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -28,7 +29,6 @@ import java.util.regex.Pattern;
  * IP and Port Helper for RPC
  */
 public class NetUtils {
-
 
 
     // returned port range is [30000, 39999]
@@ -82,7 +82,6 @@ public class NetUtils {
     public static boolean isValidAddress(String address) {
         return ADDRESS_PATTERN.matcher(address).matches();
     }
-
 
 
     /**

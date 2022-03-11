@@ -17,7 +17,6 @@
 package com.fan.rpc.common.utils;
 
 
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -560,7 +559,6 @@ public final class StringUtils {
         }
         return true;
     }
-
 
 
     /**

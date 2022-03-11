@@ -1,6 +1,7 @@
 package com.fan.rpc.remoting.netty;
 
 import com.fan.rpc.remoting.FChannelHandler;
+import com.fan.rpc.remoting.transport.AbstractFChannel;
 import io.netty.channel.Channel;
 
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class NettyChannel extends AbstractFChannel{
+public class NettyChannel extends AbstractFChannel {
 
     /**
      * the cache for netty channel and fRpc channel
@@ -24,7 +25,7 @@ public class NettyChannel extends AbstractFChannel{
     private final AtomicBoolean active = new AtomicBoolean(false);
 
 
-    private NettyChannel(Channel channel,  FChannelHandler handler) {
+    private NettyChannel(Channel channel, FChannelHandler handler) {
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
         }
@@ -40,7 +41,7 @@ public class NettyChannel extends AbstractFChannel{
      * @param handler dubbo handler that contain netty's handler
      * @return
      */
-    static NettyChannel getOrAddChannel(Channel ch,  FChannelHandler handler) {
+    static NettyChannel getOrAddChannel(Channel ch, FChannelHandler handler) {
         if (ch == null) {
             return null;
         }

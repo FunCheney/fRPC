@@ -2,4 +2,5 @@ rootProject.name = 'fRPC'
 
 include 'transport'
 include 'common'
+include 'api'
 

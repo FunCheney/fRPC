@@ -1,6 +1,6 @@
 package com.fan.rpc.common.extension;
 
-public class FRpcLoadingStrategy implements LoadingStrategy{
+public class FRpcLoadingStrategy implements LoadingStrategy {
 
     @Override
     public String directory() {

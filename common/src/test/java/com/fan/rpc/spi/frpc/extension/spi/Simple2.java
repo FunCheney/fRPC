@@ -1,4 +1,4 @@
 package com.fan.rpc.spi.frpc.extension.spi;
 
-public class Simple2 implements MySPISimple{
+public class Simple2 implements MySPISimple {
 }

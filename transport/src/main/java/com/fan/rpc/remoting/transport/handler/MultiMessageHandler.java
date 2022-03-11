@@ -2,12 +2,12 @@ package com.fan.rpc.remoting.transport.handler;
 
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.netty.NettyChannel;
+import com.fan.rpc.remoting.transport.AbstractChannelHandler;
 
 public class MultiMessageHandler extends AbstractChannelHandler {
 
 
-    protected MultiMessageHandler(FChannelHandler handler) {
+    public MultiMessageHandler(FChannelHandler handler) {
         super(handler);
     }
 

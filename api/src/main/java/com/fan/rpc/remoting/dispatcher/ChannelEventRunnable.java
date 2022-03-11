@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fan.rpc.remoting.transport.dispatcher;
+package com.fan.rpc.remoting.dispatcher;
 
 
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.netty.NettyChannel;
 
 public class ChannelEventRunnable implements Runnable {
 
@@ -59,32 +58,32 @@ public class ChannelEventRunnable implements Runnable {
             }
         } else {
             switch (state) {
-            case CONNECTED:
-                try {
+                case CONNECTED:
+                    try {
 //                    handler.connected(channel);
-                } catch (Exception e) {
-                }
-                break;
-            case DISCONNECTED:
-                try {
+                    } catch (Exception e) {
+                    }
+                    break;
+                case DISCONNECTED:
+                    try {
 //                    handler.disconnected(channel);
-                } catch (Exception e) {
-                }
-                break;
-            case SENT:
-                try {
+                    } catch (Exception e) {
+                    }
+                    break;
+                case SENT:
+                    try {
 //                    handler.sent(channel, message);
-                } catch (Exception e) {
-                }
-                break;
-            case CAUGHT:
-                try {
+                    } catch (Exception e) {
+                    }
+                    break;
+                case CAUGHT:
+                    try {
 //                    handler.caught(channel, exception);
-                } catch (Exception e) {
+                    } catch (Exception e) {
 
-                }
-                break;
-            default:
+                    }
+                    break;
+                default:
             }
         }
 
@@ -92,8 +91,6 @@ public class ChannelEventRunnable implements Runnable {
 
     /**
      * ChannelState
-     *
-     *
      */
     public enum ChannelState {
 

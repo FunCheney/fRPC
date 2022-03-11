@@ -1,6 +1,9 @@
 package com.fan.rpc.remoting.netty;
 
+import com.fan.rpc.common.FURL;
+import com.fan.rpc.remoting.FChannelHandler;
 import com.fan.rpc.remoting.transport.AbstractServer;
+import com.fan.rpc.remoting.transport.FChannelHandlers;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -16,6 +19,14 @@ public class NettyServer extends AbstractServer {
     private ServerBootstrap bootstrap;
     private Channel channel;
 
+
+    public NettyServer() {
+        super(new FURL("localhost", 9999), null);
+    }
+
+    public NettyServer(FURL url, FChannelHandler handler) {
+        super(url,  FChannelHandlers.wrap(handler, url));
+    }
 
     @Override
     public void doStart() throws Throwable {

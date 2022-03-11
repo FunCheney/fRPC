@@ -114,7 +114,7 @@ public class CtClassBuilder {
 
     /**
      * get full qualified class name
-     * 
+     *
      * @param className super class name, maybe qualified or not
      */
     protected String getQualifiedClassName(String className) {
@@ -135,7 +135,7 @@ public class CtClassBuilder {
     public CtClass build(ClassLoader classLoader) throws NotFoundException, CannotCompileException {
         ClassPool pool = new ClassPool(true);
         pool.appendClassPath(new LoaderClassPath(classLoader));
-        
+
         // create class
         CtClass ctClass = pool.makeClass(className, pool.get(superClassName));
 

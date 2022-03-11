@@ -1,8 +1,8 @@
-package com.fan.rpc.remoting.transport.dispatcher;
+package com.fan.rpc.remoting.dispatcher;
 
+import com.fan.rpc.common.FURL;
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.netty.NettyChannel;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -13,10 +13,14 @@ public class WrappedChannelHandler implements FChannelHandler {
 
     protected final FChannelHandler handler;
 
+    private final FURL furl;
 
-    public WrappedChannelHandler(FChannelHandler handler) {
+
+    public WrappedChannelHandler(FChannelHandler handler, FURL furl) {
         this.handler = handler;
+        this.furl = furl;
     }
+
     @Override
     public void received(FChannel channel, Object message) {
         handler.received(channel, message);

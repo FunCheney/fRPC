@@ -205,7 +205,7 @@ class URL implements Serializable {
 
 
     public static URL valueOf(String url) {
-       return null;
+        return null;
     }
 
     public static Map<String, Map<String, String>> toMethodParameters(Map<String, String> parameters) {
@@ -1101,7 +1101,6 @@ class URL implements Serializable {
     }
 
 
-
     public String toParameterString() {
         if (parameter != null) {
             return parameter;
@@ -1162,10 +1161,6 @@ class URL implements Serializable {
             target.append(":");
         }
     }
-
-
-
-
 
 
     /**

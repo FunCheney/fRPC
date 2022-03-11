@@ -14,33 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fan.rpc.remoting.transport.dispatcher.all;
+package com.fan.rpc.remoting.dispatcher.all;
 
 
-import com.fan.rpc.remoting.FChannel;
+import com.fan.rpc.common.FURL;
+import com.fan.rpc.remoting.Dispatcher;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.netty.NettyChannel;
-import com.fan.rpc.remoting.transport.dispatcher.ChannelEventRunnable;
-import com.fan.rpc.remoting.transport.dispatcher.ChannelEventRunnable.ChannelState;
-import com.fan.rpc.remoting.transport.dispatcher.WrappedChannelHandler;
 
-import java.util.concurrent.ExecutorService;
+/**
+ * default thread pool configure
+ */
+public class AllDispatcher implements Dispatcher {
 
-public class AllChannelHandler extends WrappedChannelHandler {
-
-
-    public AllChannelHandler(FChannelHandler handler) {
-        super(handler);
-    }
+    public static final String NAME = "all";
 
     @Override
-    public void received(FChannel channel, Object message) {
-
-        ExecutorService executor = getPreferredExecutorService(message);
-        try {
-            executor.execute(new ChannelEventRunnable(channel, handler, ChannelState.RECEIVED, message));
-        } catch (Throwable t) {
-
-        }
+    public FChannelHandler dispatch(FChannelHandler handler, FURL url) {
+        // 这里保存了 DecodeHandler 的引用
+        return new AllChannelHandler(handler, url);
     }
+
 }

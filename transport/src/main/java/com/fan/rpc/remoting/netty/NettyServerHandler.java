@@ -18,7 +18,6 @@ package com.fan.rpc.remoting.netty;
 
 import com.fan.rpc.remoting.FChannelHandler;
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 

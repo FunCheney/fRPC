@@ -1,9 +1,7 @@
-package com.fan.rpc.remoting.transport.handler;
+package com.fan.rpc.remoting.transport;
 
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.netty.NettyChannel;
-import io.netty.channel.Channel;
 
 public abstract class AbstractChannelHandler implements FChannelHandler {
 

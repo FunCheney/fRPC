@@ -301,18 +301,18 @@ public class ClassUtils {
                 : className, true, Thread.currentThread().getContextClassLoader());
     }
 
-        /**
-         * Resolve the given class name as primitive class, if appropriate,
-         * according to the JVM's naming rules for primitive classes.
-         * <p>
-         * Also supports the JVM's internal class names for primitive arrays. Does
-         * <i>not</i> support the "[]" suffix notation for primitive arrays; this is
-         * only supported by {@link #forName}.
-         *
-         * @param name the name of the potentially primitive class
-         * @return the primitive class, or <code>null</code> if the name does not
-         * denote a primitive class or primitive array class
-         */
+    /**
+     * Resolve the given class name as primitive class, if appropriate,
+     * according to the JVM's naming rules for primitive classes.
+     * <p>
+     * Also supports the JVM's internal class names for primitive arrays. Does
+     * <i>not</i> support the "[]" suffix notation for primitive arrays; this is
+     * only supported by {@link #forName}.
+     *
+     * @param name the name of the potentially primitive class
+     * @return the primitive class, or <code>null</code> if the name does not
+     * denote a primitive class or primitive array class
+     */
     public static Class<?> resolvePrimitiveClassName(String name) {
         Class<?> result = null;
         // Most class names will be quite long, considering that they
