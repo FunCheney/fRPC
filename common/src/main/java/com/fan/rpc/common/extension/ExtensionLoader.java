@@ -96,6 +96,7 @@ public class ExtensionLoader<T> {
     }
 
     private static LoadingStrategy[] loadLoadingStrategies() {
+        // 这里调用原生的 Java SPI 来加载类
         return stream(load(LoadingStrategy.class).spliterator(), false)
                 .sorted()
                 .toArray(LoadingStrategy[]::new);

@@ -5,4 +5,8 @@ public class FRpcInternalLoadingStrategy implements LoadingStrategy{
     public String directory() {
         return "META-INF/frpc/internal/";
     }
+    @Override
+    public int getPriority() {
+        return MAX_PRIORITY;
+    }
 }

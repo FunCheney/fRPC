@@ -1,4 +1,4 @@
-package com.fan.rpc.spi.frpc.exention.spi;
+package com.fan.rpc.spi.frpc.extension.spi;
 
 import com.fan.rpc.common.extension.ann.SPI;
 

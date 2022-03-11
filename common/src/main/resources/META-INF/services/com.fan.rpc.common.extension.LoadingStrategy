@@ -1,0 +1,3 @@
+com.fan.rpc.common.extension.FRpcInternalLoadingStrategy
+com.fan.rpc.common.extension.FRpcLoadingStrategy
+com.fan.rpc.common.extension.ServicesLoadingStrategy

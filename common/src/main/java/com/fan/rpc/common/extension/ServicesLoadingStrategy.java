@@ -1,10 +1,10 @@
 package com.fan.rpc.common.extension;
 
-public class FRpcLoadingStrategy implements LoadingStrategy{
+public class ServicesLoadingStrategy implements LoadingStrategy {
 
     @Override
     public String directory() {
-        return "META-INF/frpc/";
+        return "META-INF/services/";
     }
 
     @Override
@@ -14,7 +14,7 @@ public class FRpcLoadingStrategy implements LoadingStrategy{
 
     @Override
     public int getPriority() {
-        return NORMAL_PRIORITY;
+        return MIN_PRIORITY;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.fan.rpc.common.extension;
 
-public interface LoadingStrategy {
+import com.fan.rpc.common.extension.lang.Prioritized;
+
+public interface LoadingStrategy extends Prioritized {
 
     String directory();
 

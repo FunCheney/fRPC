@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 public class AdaptiveClassCodeGenerator {
 
 
-    private static final String CLASSNAME_INVOCATION = "org.apache.dubbo.rpc.Invocation";
+    private static final String CLASSNAME_INVOCATION = "org.apache.fan.rpc.Invocation";
 
     private static final String CODE_PACKAGE = "package %s;\n";
 
