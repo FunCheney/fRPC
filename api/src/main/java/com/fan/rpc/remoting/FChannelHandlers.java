@@ -14,15 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fan.rpc.remoting.transport;
+package com.fan.rpc.remoting;
 
 
 import com.fan.rpc.common.FURL;
 import com.fan.rpc.common.extension.ExtensionLoader;
-import com.fan.rpc.remoting.Dispatcher;
-import com.fan.rpc.remoting.FChannelHandler;
 import com.fan.rpc.remoting.exchange.HeartbeatHandler;
-import com.fan.rpc.remoting.transport.handler.MultiMessageHandler;
 
 public class FChannelHandlers {
 

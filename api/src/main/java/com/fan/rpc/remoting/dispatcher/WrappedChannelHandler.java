@@ -38,4 +38,8 @@ public class WrappedChannelHandler implements FChannelHandler {
         return executor;
     }
 
+    public FURL getUrl() {
+        return furl;
+    }
+
 }

@@ -1,8 +1,6 @@
-package com.fan.rpc.remoting.transport;
+package com.fan.rpc.remoting;
 
 import com.fan.rpc.common.FURL;
-import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.RemotingServer;
 
 import java.net.InetSocketAddress;
 

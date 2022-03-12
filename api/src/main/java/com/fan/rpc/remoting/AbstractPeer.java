@@ -1,4 +1,4 @@
-package com.fan.rpc.remoting.transport;
+package com.fan.rpc.remoting;
 
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;

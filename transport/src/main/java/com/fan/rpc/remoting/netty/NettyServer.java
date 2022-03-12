@@ -2,8 +2,8 @@ package com.fan.rpc.remoting.netty;
 
 import com.fan.rpc.common.FURL;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.transport.AbstractServer;
-import com.fan.rpc.remoting.transport.FChannelHandlers;
+import com.fan.rpc.remoting.AbstractServer;
+import com.fan.rpc.remoting.FChannelHandlers;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;

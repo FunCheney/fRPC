@@ -1,1 +1,2 @@
+adaptive=com.fan.rpc.common.compiler.support.AdaptiveCompiler
 javassist=com.fan.rpc.common.compiler.support.JavassistCompiler
