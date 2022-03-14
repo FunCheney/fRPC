@@ -17,7 +17,6 @@
 package com.fan.rpc.common.compiler.support;
 
 import com.fan.rpc.common.compiler.Compiler;
-import com.fan.rpc.common.utils.ClassUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +49,7 @@ public abstract class AbstractCompiler implements Compiler {
         }
         String className = pkg != null && pkg.length() > 0 ? pkg + "." + cls : cls;
         try {
-            return Class.forName(className, true, ClassUtils.getCallerClassLoader(getClass()));
+            return Class.forName(className, true, com.fan.rpc.common.utils.ClassUtils.getCallerClassLoader(getClass()));
         } catch (ClassNotFoundException e) {
             if (!code.endsWith("}")) {
                 throw new IllegalStateException("The java code not endsWith \"}\", code: \n" + code + "\n");
@@ -60,7 +59,7 @@ public abstract class AbstractCompiler implements Compiler {
             } catch (RuntimeException t) {
                 throw t;
             } catch (Throwable t) {
-                return null;
+                throw new IllegalStateException("Failed to compile class, cause: " + t.getMessage() + ", class: " + className + ", code: \n" + code + "\n, stack: " + ClassUtils.toString(t));
             }
         }
     }

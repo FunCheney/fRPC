@@ -17,7 +17,7 @@
 package com.fan.rpc.remoting.dispatcher.all;
 
 
-import com.fan.rpc.common.FURL;
+import com.fan.rpc.common.URL;
 import com.fan.rpc.remoting.Dispatcher;
 import com.fan.rpc.remoting.FChannelHandler;
 
@@ -29,7 +29,7 @@ public class AllDispatcher implements Dispatcher {
     public static final String NAME = "all";
 
     @Override
-    public FChannelHandler dispatch(FChannelHandler handler, FURL url) {
+    public FChannelHandler dispatch(FChannelHandler handler, URL url) {
         // 这里保存了 DecodeHandler 的引用
         return new AllChannelHandler(handler, url);
     }

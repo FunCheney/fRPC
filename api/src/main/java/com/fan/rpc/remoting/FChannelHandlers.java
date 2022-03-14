@@ -17,7 +17,7 @@
 package com.fan.rpc.remoting;
 
 
-import com.fan.rpc.common.FURL;
+import com.fan.rpc.common.URL;
 import com.fan.rpc.common.extension.ExtensionLoader;
 import com.fan.rpc.remoting.exchange.HeartbeatHandler;
 
@@ -28,7 +28,7 @@ public class FChannelHandlers {
     protected FChannelHandlers() {
     }
 
-    public static FChannelHandler wrap(FChannelHandler handler, FURL url) {
+    public static FChannelHandler wrap(FChannelHandler handler, URL url) {
         // 单例，包装 handler
         return FChannelHandlers.getInstance().wrapInternal(handler, url);
     }
@@ -41,7 +41,7 @@ public class FChannelHandlers {
         INSTANCE = instance;
     }
 
-    protected FChannelHandler wrapInternal(FChannelHandler handler, FURL url) {
+    protected FChannelHandler wrapInternal(FChannelHandler handler, URL url) {
         // 返回 MultiMessageHandler, 这里通过 new HeartbeatHandler() 创建 HeartbeatHandler 作为构造参数传入
         // ExtensionLoader.getExtensionLoader(Dispatcher.class).getAdaptiveExtension().dispatch(handler, url)
         // 该方法返回 AllChannelHandler 作为new HeartbeatHandler() 的参数

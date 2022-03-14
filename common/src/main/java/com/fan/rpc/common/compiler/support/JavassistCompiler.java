@@ -17,7 +17,6 @@
 package com.fan.rpc.common.compiler.support;
 
 
-import com.fan.rpc.common.utils.ClassUtils;
 import javassist.CtClass;
 
 import java.util.Arrays;
@@ -78,7 +77,7 @@ public class JavassistCompiler extends AbstractCompiler {
         });
 
         // compile
-        ClassLoader classLoader = ClassUtils.getCallerClassLoader(getClass());
+        ClassLoader classLoader = com.fan.rpc.common.utils.ClassUtils.getCallerClassLoader(getClass());
         CtClass cls = builder.build(classLoader);
         return cls.toClass(classLoader, JavassistCompiler.class.getProtectionDomain());
     }

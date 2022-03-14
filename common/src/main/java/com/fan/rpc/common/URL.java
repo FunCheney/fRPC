@@ -17,6 +17,9 @@
 package com.fan.rpc.common;
 
 
+import com.fan.rpc.common.config.Configuration;
+import com.fan.rpc.common.config.InmemoryConfiguration;
+import com.fan.rpc.common.constants.RemotingConstants;
 import com.fan.rpc.common.utils.ArrayUtils;
 import com.fan.rpc.common.utils.CollectionUtils;
 import com.fan.rpc.common.utils.NetUtils;
@@ -32,8 +35,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import static com.fan.rpc.common.constants.CommonConstants.*;
 import static com.fan.rpc.common.utils.StringUtils.isBlank;
-
 
 /**
  * URL - Uniform Resource Locator (Immutable, ThreadSafe)
@@ -203,13 +206,135 @@ class URL implements Serializable {
         return port <= 0 ? host : host + ':' + port;
     }
 
-
+    /**
+     * NOTICE: This method allocate too much objects, we can use {@link URLStrParser#parseDecodedStr(String)} instead.
+     * <p>
+     * Parse url string
+     *
+     * @param url URL string
+     * @return URL instance
+     * @see URL
+     */
     public static URL valueOf(String url) {
-        return null;
+        if (url == null || (url = url.trim()).length() == 0) {
+            throw new IllegalArgumentException("url == null");
+        }
+        String protocol = null;
+        String username = null;
+        String password = null;
+        String host = null;
+        int port = 0;
+        String path = null;
+        Map<String, String> parameters = null;
+        int i = url.indexOf('?'); // separator between body and parameters
+        if (i >= 0) {
+            String[] parts = url.substring(i + 1).split("&");
+            parameters = new HashMap<>();
+            for (String part : parts) {
+                part = part.trim();
+                if (part.length() > 0) {
+                    int j = part.indexOf('=');
+                    if (j >= 0) {
+                        String key = part.substring(0, j);
+                        String value = part.substring(j + 1);
+                        parameters.put(key, value);
+                        // compatible with lower versions registering "default." keys
+                        if (key.startsWith(DEFAULT_KEY_PREFIX)) {
+                            parameters.putIfAbsent(key.substring(DEFAULT_KEY_PREFIX.length()), value);
+                        }
+                    } else {
+                        parameters.put(part, part);
+                    }
+                }
+            }
+            url = url.substring(0, i);
+        }
+        i = url.indexOf("://");
+        if (i >= 0) {
+            if (i == 0) {
+                throw new IllegalStateException("url missing protocol: \"" + url + "\"");
+            }
+            protocol = url.substring(0, i);
+            url = url.substring(i + 3);
+        } else {
+            // case: file:/path/to/file.txt
+            i = url.indexOf(":/");
+            if (i >= 0) {
+                if (i == 0) {
+                    throw new IllegalStateException("url missing protocol: \"" + url + "\"");
+                }
+                protocol = url.substring(0, i);
+                url = url.substring(i + 1);
+            }
+        }
+
+        i = url.indexOf('/');
+        if (i >= 0) {
+            path = url.substring(i + 1);
+            url = url.substring(0, i);
+        }
+        i = url.lastIndexOf('@');
+        if (i >= 0) {
+            username = url.substring(0, i);
+            int j = username.indexOf(':');
+            if (j >= 0) {
+                password = username.substring(j + 1);
+                username = username.substring(0, j);
+            }
+            url = url.substring(i + 1);
+        }
+        i = url.lastIndexOf(':');
+        if (i >= 0 && i < url.length() - 1) {
+            if (url.lastIndexOf('%') > i) {
+                // ipv6 address with scope id
+                // e.g. fe80:0:0:0:894:aeec:f37d:23e1%en0
+                // see https://howdoesinternetwork.com/2013/ipv6-zone-id
+                // ignore
+            } else {
+                port = Integer.parseInt(url.substring(i + 1));
+                url = url.substring(0, i);
+            }
+        }
+        if (url.length() > 0) {
+            host = url;
+        }
+
+        return new URL(protocol, username, password, host, port, path, parameters);
     }
 
     public static Map<String, Map<String, String>> toMethodParameters(Map<String, String> parameters) {
         Map<String, Map<String, String>> methodParameters = new HashMap<>();
+        if (parameters == null) {
+            return methodParameters;
+        }
+
+        String methodsString = parameters.get(METHODS_KEY);
+        if (StringUtils.isNotEmpty(methodsString)) {
+            List<String> methods = StringUtils.splitToList(methodsString, ',');
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                String key = entry.getKey();
+                for (int i = 0; i < methods.size(); i++) {
+                    String method = methods.get(i);
+                    int methodLen = method.length();
+                    if (key.length() > methodLen
+                            && key.startsWith(method)
+                            && key.charAt(methodLen) == '.') {//equals to: key.startsWith(method + '.')
+                        String realKey = key.substring(methodLen + 1);
+                        URL.putMethodParameter(method, realKey, entry.getValue(), methodParameters);
+                    }
+                }
+            }
+        } else {
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                String key = entry.getKey();
+                int methodSeparator = key.indexOf('.');
+                if (methodSeparator > 0) {
+                    String method = key.substring(0, methodSeparator);
+                    String realKey = key.substring(methodSeparator + 1);
+                    URL.putMethodParameter(method, realKey, entry.getValue(), methodParameters);
+                }
+            }
+        }
         return methodParameters;
     }
 
@@ -382,14 +507,25 @@ class URL implements Serializable {
 
     public String getBackupAddress(int defaultPort) {
         StringBuilder address = new StringBuilder(appendDefaultPort(getAddress(), defaultPort));
-
+        String[] backups = getParameter(RemotingConstants.BACKUP_KEY, new String[0]);
+        if (ArrayUtils.isNotEmpty(backups)) {
+            for (String backup : backups) {
+                address.append(',');
+                address.append(appendDefaultPort(backup, defaultPort));
+            }
+        }
         return address.toString();
     }
 
     public List<URL> getBackupUrls() {
         List<URL> urls = new ArrayList<>();
         urls.add(this);
-
+        String[] backups = getParameter(RemotingConstants.BACKUP_KEY, new String[0]);
+        if (backups != null && backups.length > 0) {
+            for (String backup : backups) {
+                urls.add(this.setAddress(backup));
+            }
+        }
         return urls;
     }
 
@@ -451,6 +587,20 @@ class URL implements Serializable {
         return StringUtils.isEmpty(value) ? defaultValue : value;
     }
 
+    public String[] getParameter(String key, String[] defaultValue) {
+        String value = getParameter(key);
+        return StringUtils.isEmpty(value) ? defaultValue : COMMA_SPLIT_PATTERN.split(value);
+    }
+
+    public List<String> getParameter(String key, List<String> defaultValue) {
+        String value = getParameter(key);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        String[] strArray = COMMA_SPLIT_PATTERN.split(value);
+        return Arrays.asList(strArray);
+    }
+
     /**
      * Get parameter
      *
@@ -477,6 +627,9 @@ class URL implements Serializable {
     public <T> T getParameter(String key, Class<T> valueType, T defaultValue) {
         String value = getParameter(key);
         T result = null;
+        if (!isBlank(value)) {
+//            result = convertIfPossible(value, valueType);
+        }
         if (result == null) {
             result = defaultValue;
         }
@@ -877,6 +1030,13 @@ class URL implements Serializable {
         return getMethodParameters().containsKey(method);
     }
 
+    public boolean isLocalHost() {
+        return NetUtils.isLocalHost(host) || getParameter(LOCALHOST_KEY, false);
+    }
+
+    public boolean isAnyHost() {
+        return ANYHOST_VALUE.equals(host) || getParameter(ANYHOST_KEY, false);
+    }
 
     public URL addParameterAndEncoded(String key, String value) {
         if (StringUtils.isEmpty(value)) {
@@ -1100,6 +1260,84 @@ class URL implements Serializable {
         return new URL(protocol, username, password, host, port, path, new HashMap<>());
     }
 
+    public String getRawParameter(String key) {
+        if (PROTOCOL_KEY.equals(key)) {
+            return protocol;
+        }
+        if (USERNAME_KEY.equals(key)) {
+            return username;
+        }
+        if (PASSWORD_KEY.equals(key)) {
+            return password;
+        }
+        if (HOST_KEY.equals(key)) {
+            return host;
+        }
+        if (PORT_KEY.equals(key)) {
+            return String.valueOf(port);
+        }
+        if (PATH_KEY.equals(key)) {
+            return path;
+        }
+        return getParameter(key);
+    }
+
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<>(parameters);
+        if (protocol != null) {
+            map.put(PROTOCOL_KEY, protocol);
+        }
+        if (username != null) {
+            map.put(USERNAME_KEY, username);
+        }
+        if (password != null) {
+            map.put(PASSWORD_KEY, password);
+        }
+        if (host != null) {
+            map.put(HOST_KEY, host);
+        }
+        if (port > 0) {
+            map.put(PORT_KEY, String.valueOf(port));
+        }
+        if (path != null) {
+            map.put(PATH_KEY, path);
+        }
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        if (string != null) {
+            return string;
+        }
+        return string = buildString(false, true); // no show username and password
+    }
+
+    public String toString(String... parameters) {
+        return buildString(false, true, parameters); // no show username and password
+    }
+
+    public String toIdentityString() {
+        if (identity != null) {
+            return identity;
+        }
+        return identity = buildString(true, false); // only return identity message, see the method "equals" and "hashCode"
+    }
+
+    public String toIdentityString(String... parameters) {
+        return buildString(true, false, parameters); // only return identity message, see the method "equals" and "hashCode"
+    }
+
+    public String toFullString() {
+        if (full != null) {
+            return full;
+        }
+        return full = buildString(true, true);
+    }
+
+    public String toFullString(String... parameters) {
+        return buildString(true, true, parameters);
+    }
 
     public String toParameterString() {
         if (parameter != null) {
@@ -1137,6 +1375,54 @@ class URL implements Serializable {
         }
     }
 
+    private String buildString(boolean appendUser, boolean appendParameter, String... parameters) {
+        return buildString(appendUser, appendParameter, false, false, parameters);
+    }
+
+    private String buildString(boolean appendUser, boolean appendParameter, boolean useIP, boolean useService, String... parameters) {
+        StringBuilder buf = new StringBuilder();
+        if (StringUtils.isNotEmpty(protocol)) {
+            buf.append(protocol);
+            buf.append("://");
+        }
+        if (appendUser && StringUtils.isNotEmpty(username)) {
+            buf.append(username);
+            if (StringUtils.isNotEmpty(password)) {
+                buf.append(":");
+                buf.append(password);
+            }
+            buf.append("@");
+        }
+        String host;
+        if (useIP) {
+            host = getIp();
+        } else {
+            host = getHost();
+        }
+        if (StringUtils.isNotEmpty(host)) {
+            buf.append(host);
+            if (port > 0) {
+                buf.append(":");
+                buf.append(port);
+            }
+        }
+        String path;
+        if (useService) {
+            path = getServiceKey();
+        } else {
+            path = getPath();
+        }
+        if (StringUtils.isNotEmpty(path)) {
+            buf.append("/");
+            buf.append(path);
+        }
+
+        if (appendParameter) {
+            buildParameters(buf, true, parameters);
+        }
+        return buf.toString();
+    }
+
     public java.net.URL toJavaURL() {
         try {
             return new java.net.URL(toString());
@@ -1149,6 +1435,18 @@ class URL implements Serializable {
         return new InetSocketAddress(host, port);
     }
 
+    /**
+     * The format is "{interface}:[version]:[group]"
+     *
+     * @return
+     */
+    public String getColonSeparatedKey() {
+        StringBuilder serviceNameBuilder = new StringBuilder();
+        serviceNameBuilder.append(this.getServiceInterface());
+        append(serviceNameBuilder, VERSION_KEY, false);
+        append(serviceNameBuilder, GROUP_KEY, false);
+        return serviceNameBuilder.toString();
+    }
 
     private void append(StringBuilder target, String parameterName, boolean first) {
         String parameterValue = this.getParameter(parameterName);
@@ -1162,6 +1460,61 @@ class URL implements Serializable {
         }
     }
 
+    /**
+     * The format of return value is '{group}/{interfaceName}:{version}'
+     *
+     * @return
+     */
+    public String getServiceKey() {
+        if (serviceKey != null) {
+            return serviceKey;
+        }
+        String inf = getServiceInterface();
+        if (inf == null) {
+            return null;
+        }
+        serviceKey = buildKey(inf, getParameter(GROUP_KEY), getParameter(VERSION_KEY));
+        return serviceKey;
+    }
+
+    /**
+     * The format of return value is '{group}/{path/interfaceName}:{version}'
+     *
+     * @return
+     */
+    public String getPathKey() {
+        String inf = StringUtils.isNotEmpty(path) ? path : getServiceInterface();
+        if (inf == null) {
+            return null;
+        }
+        return buildKey(inf, getParameter(GROUP_KEY), getParameter(VERSION_KEY));
+    }
+
+    public static String buildKey(String path, String group, String version) {
+//        return BaseServiceMetadata.buildServiceKey(path, group, version);
+        return null;
+    }
+
+    public String toServiceStringWithoutResolving() {
+        return buildString(true, false, false, true);
+    }
+
+    public String toServiceString() {
+        return buildString(true, false, true, true);
+    }
+
+    @Deprecated
+    public String getServiceName() {
+        return getServiceInterface();
+    }
+
+    public String getServiceInterface() {
+        return getParameter(INTERFACE_KEY, path);
+    }
+
+    public URL setServiceInterface(String service) {
+        return addParameter(INTERFACE_KEY, service);
+    }
 
     /**
      * @see #getParameter(String, int)
@@ -1253,6 +1606,11 @@ class URL implements Serializable {
         return getMethodParameter(method, key, defaultValue);
     }
 
+    public Configuration toConfiguration() {
+        InmemoryConfiguration configuration = new InmemoryConfiguration();
+        configuration.addProperties(parameters);
+        return configuration;
+    }
 
     @Override
     public int hashCode() {

@@ -16,8 +16,10 @@
  */
 package com.fun.remote.transport.netty;
 
-import com.fan.rpc.common.FURL;
+import com.fan.rpc.common.URL;
+import com.fan.rpc.common.utils.NetUtils;
 import com.fan.rpc.remoting.ChannelHandlerAdapter;
+import com.fan.rpc.remoting.Constants;
 import com.fan.rpc.remoting.RemotingServer;
 import com.fan.rpc.remoting.netty.NettyTransporter;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,9 @@ import org.junit.jupiter.api.Test;
 public class NettyTransporterTest {
     @Test
     public void shouldAbleToBindNetty4() throws Exception {
-        FURL url = new FURL("localhost", 8080);
+        int port = NetUtils.getAvailablePort();
+        URL url = new URL("http", "localhost", port,
+                new String[]{Constants.BIND_PORT_KEY, String.valueOf(port)});
         RemotingServer server = new NettyTransporter().bind(url, new ChannelHandlerAdapter());
     }
 

@@ -613,7 +613,7 @@ public class ExtensionLoader<T> {
         // 扫描三个 SPI 目录获取查找相应的 SPI 配置文件，然后加载其中的扩展实现类
         for (LoadingStrategy strategy : strategies) {
             loadDirectory(extensionClasses, strategy.directory(), type.getName(), strategy.preferExtensionClassLoader(), strategy.overridden(), strategy.excludedPackages());
-            loadDirectory(extensionClasses, strategy.directory(), type.getName().replace("org.apache", "com.alibaba"), strategy.preferExtensionClassLoader(), strategy.overridden(), strategy.excludedPackages());
+//            loadDirectory(extensionClasses, strategy.directory(), type.getName().replace("org.apache", "com.alibaba"), strategy.preferExtensionClassLoader(), strategy.overridden(), strategy.excludedPackages());
         }
 
         return extensionClasses;
@@ -679,7 +679,8 @@ public class ExtensionLoader<T> {
                 }
             }
         } catch (Throwable t) {
-
+            throw new IllegalStateException("Exception occurred when loading extension class (interface: " +
+                    type + ", description file: " + fileName + ").", t);
         }
     }
 

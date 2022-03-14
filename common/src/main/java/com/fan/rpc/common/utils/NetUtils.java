@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
+import static com.fan.rpc.common.constants.CommonConstants.LOCALHOST_KEY;
+
 /**
  * IP and Port Helper for RPC
  */
@@ -328,4 +330,10 @@ public class NetUtils {
         return Integer.parseInt(ipSegment, 16);
     }
 
+    public static boolean isLocalHost(String host) {
+        return host != null
+                && (LOCAL_IP_PATTERN.matcher(host).matches()
+                || host.equalsIgnoreCase(LOCALHOST_KEY));
+
+    }
 }

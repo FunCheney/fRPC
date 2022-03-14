@@ -51,7 +51,5 @@ public class ExtensionLoaderTest {
         for (LoadingStrategy next : load) {
             System.out.println(next);
         }
-
-
     }
 }

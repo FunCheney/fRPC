@@ -17,7 +17,6 @@
 package com.fan.rpc.common.extension;
 
 
-import com.fan.rpc.common.FURL;
 import com.fan.rpc.common.URL;
 import com.fan.rpc.common.extension.ann.Adaptive;
 import com.fan.rpc.common.utils.StringUtils;
@@ -36,7 +35,7 @@ import java.util.stream.IntStream;
 public class AdaptiveClassCodeGenerator {
 
 
-    private static final String CLASSNAME_INVOCATION = "org.apache.fan.rpc.Invocation";
+    private static final String CLASSNAME_INVOCATION = "org.apache.dubbo.rpc.Invocation";
 
     private static final String CODE_PACKAGE = "package %s;\n";
 
@@ -141,7 +140,7 @@ public class AdaptiveClassCodeGenerator {
         int urlTypeIndex = -1;
         Class<?>[] pts = method.getParameterTypes();
         for (int i = 0; i < pts.length; ++i) {
-            if (pts[i].equals(FURL.class)) {
+            if (pts[i].equals(URL.class)) {
                 urlTypeIndex = i;
                 break;
             }
@@ -188,7 +187,7 @@ public class AdaptiveClassCodeGenerator {
      * generate method URL argument null check
      */
     private String generateUrlNullCheck(int index) {
-        return String.format(CODE_URL_NULL_CHECK, index, FURL.class.getName(), index);
+        return String.format(CODE_URL_NULL_CHECK, index, URL.class.getName(), index);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.fan.rpc.remoting;
 
-import com.fan.rpc.common.FURL;
+import com.fan.rpc.common.URL;
 
 import java.net.InetSocketAddress;
 
@@ -9,7 +9,7 @@ public abstract class AbstractServer extends AbstractPeer implements RemotingSer
     private InetSocketAddress bindAddress;
 
 
-    public AbstractServer(FURL url, FChannelHandler handler) {
+    public AbstractServer(URL url, FChannelHandler handler) {
 
         try {
             doStart();

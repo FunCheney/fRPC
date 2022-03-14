@@ -14,17 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fan.rpc.remoting;
 
+package com.fan.rpc.common.constants;
 
 /**
- * ChannelHandlerAdapter.
+ * RemotingConstants
  */
-public class ChannelHandlerAdapter implements FChannelHandler {
+public interface RemotingConstants {
 
-
-    @Override
-    public void received(FChannel channel, Object message) {
-
-    }
+    String BACKUP_KEY = "backup";
 }

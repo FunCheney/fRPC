@@ -14,32 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fan.rpc.remoting.dispatcher.all;
+
+package com.fan.rpc.remoting.transport;
 
 
-import com.fan.rpc.common.URL;
 import com.fan.rpc.remoting.FChannel;
 import com.fan.rpc.remoting.FChannelHandler;
-import com.fan.rpc.remoting.dispatcher.ChannelEventRunnable;
-import com.fan.rpc.remoting.dispatcher.WrappedChannelHandler;
 
-import java.util.concurrent.ExecutorService;
-
-public class AllChannelHandler extends WrappedChannelHandler {
+public class DecodeHandler extends AbstractChannelHandler{
 
 
-    public AllChannelHandler(FChannelHandler handler, URL url) {
-        super(handler, url);
+    public DecodeHandler(FChannelHandler handler) {
+        // HeaderExchangeHandler 这里保存这个引用
+        super(handler);
     }
 
     @Override
     public void received(FChannel channel, Object message) {
-
-        ExecutorService executor = getPreferredExecutorService(message);
-        try {
-            executor.execute(new ChannelEventRunnable(channel, handler, ChannelEventRunnable.ChannelState.RECEIVED, message));
-        } catch (Throwable t) {
-
-        }
+        handler.received(channel, message);
     }
 }
